@@ -1,0 +1,25 @@
+---
+title: "p8105_hw5_zj2379"
+author: "Zheshu Jiang"
+date: "2023-11-12"
+output: github_document
+---
+
+## Problem 1
+```{r}
+library(tidyverse)
+# Create a city_state variable
+homicide_df = read.csv("./homicide-data.csv")|>
+ mutate(city_state = paste(city, state, sep = ", "))
+
+
+head(homicide_df, 100)
+
+#summarize within cities to obtain the total number of homicides and the number of unsolved homicides 
+homicide_df |>
+  group_by (city) |>
+  summarize(total_homicides=n(),
+            unsolved_homicides=sum(disposition %in% c("Closed without arrest","Closed by arrest")))
+```
+
+ summarize within cities to obtain the total number of homicides and the number of unsolved homicides (those for which the disposition is “Closed without arrest” or “Open/No arrest”).
