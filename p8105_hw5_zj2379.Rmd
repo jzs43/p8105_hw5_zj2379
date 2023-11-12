@@ -43,3 +43,33 @@ tidy_estimate_ci <- tidy_prop_test %>%
   select(estimate, conf.low, conf.high) %>%
   pull()
 ```
+
+```{r}
+
+# Create a summary dataframe with counts of unsolved and total homicides by city
+city_summary <- homicide_df %>%
+  group_by(city, state) %>%
+  summarise(
+    unsolved_homicides = sum(disposition %in% c("Closed without arrest", "Open/No arrest")),
+    total_homicides = n(),
+    .groups = "drop"
+  )
+
+# Use purrr to apply prop.test to each city and tidy the results
+tidy_prop_test_results <- city_summary %>%
+  mutate(
+    prop_test = map2(unsolved_homicides, total_homicides, ~prop.test(.x, .y)),
+    tidy_results = map(prop_test, broom::tidy)
+  ) %>%
+  select(city, state, tidy_results) %>%
+  unnest(tidy_results)
+tidy_proportions_ci <- tidy_prop_test_results %>%
+  select(city, state, estimate, conf.low, conf.high)
+tidy_proportions_ci
+```
+
+
+
+
+
+
