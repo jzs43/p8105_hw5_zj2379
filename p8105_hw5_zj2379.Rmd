@@ -12,9 +12,6 @@ library(tidyverse)
 homicide_df = read.csv("./homicide-data.csv")|>
  mutate(city_state = paste(city, state, sep = ", "))
 
-
-head(homicide_df, 100)
-
 #summarize within cities to obtain the total number of homicides and the number of unsolved homicides 
 homicide_df1=homicide_df |>
   group_by (city) |>
@@ -68,6 +65,18 @@ tidy_proportions_ci <- tidy_prop_test_results %>%
 tidy_proportions_ci
 ```
 
+```{r}
+tidy_proportions_ci <- tidy_proportions_ci %>%
+  arrange(desc(estimate))
+plot <- ggplot(tidy_proportions_ci, aes(x = reorder(city, estimate), y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  coord_flip() +  # Flip the axes to make the plot horizontal
+  labs(x = "City", y = "Proportion of Unsolved Homicides", title = "Proportion of Unsolved Homicides by City") +
+  theme_minimal()
+
+ggsave(filename = "unsolved_homicides_by_city.png", plot = plot, width = 10, height = 8, dpi = 300)
+```
 
 
 
