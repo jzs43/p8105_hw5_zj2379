@@ -109,16 +109,39 @@ print(subject_info)
 # write a function to read observations
 read_obs <- function(file_path) {
   df <- read_csv(file_path, show_col_types = FALSE)
-  observations_list <- as.list(df[1, ])
+  observations_list <- as.list(df[,1])
   observations_list <- lapply(observations_list, as.numeric)
   return(observations_list)
 }
  
 # use map to read multiple files
 file_paths <- list.files(path = "./data", pattern = "*.csv", full.names = TRUE)
-all_observations <- map(file_paths, read_obs)
-all_observations 
+data=read_csv(file_paths)
+combine=bind_cols(subject_info, data)
+combine_long <- combine %>%
+  pivot_longer(
+    week_1:week_8,
+    names_to = "week",
+    values_to = "observations_over_time"
+  )
+  combine_long
 ```
+Make a spaghetti plot showing observations on each subject over time, and comment on differences between groups.
+
+
+```{r}
+plot1<-ggplot(combine_long, aes(x = week, y = observations_over_time, group = subject_id, color = arm)) +
+  geom_line() +  # draw lines for each subject
+  geom_point() +  # add points for observations
+  theme_minimal() +  
+  facet_grid(. ~ arm) +
+  labs(title = "Observations Over Time by Group",
+       x = "Week",
+       y = "Observations") 
+plot1
+ggsave("observations_over_time_by_group.png", plot1, width = 10, height = 6, dpi = 300)
+```
+
 
 
 
