@@ -160,24 +160,26 @@ sim <- function(n = 30, mu, sigma = 5){
 
 let mu=0 and generate 5000 datasets from the model
 ```{r}
-sim_mu_0 <- map_df(1:5000, ~sim(mu = 0))|>
+sim_mu_0 <- rerun(5000, sim(mu = 0)) |>
   bind_rows()
 ```
+
 
 generate 5000 datasets from the model for mu=1,2,3,4,5,6
 
 ```{r}
-sim_mu<- 
+sim_mu = 
   tibble(
     mu = c(0, 1, 2, 3, 4, 5, 6)
-  ) |>
-  mutate(
-    estimates = map(.x = mu, ~ map_df(1:5000, ~ sim(30, mu = .x)))
-  ) |>
-  unnest(estimates)
+    ) |>
+  mutate(outputs = map(.x = mu, ~ rerun(5000, sim(30, mu = .x))),
+         estimate = map(outputs, bind_rows)) |>
+  unnest(estimate) |>
+  select(-outputs)
 ```
 
 Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of mu on the x axis. Describe the association between effect size and power.
+
 
 ```{r}
   plot2<-sim_mu |>
@@ -194,7 +196,7 @@ Make a plot showing the proportion of times the null was rejected (the power of 
     y = "Proportion"
   )
 plot2
-ggsave("proportion of times the null was rejected for each true value of mu.png", plot2, width = 10, height = 6, dpi = 300)
+ggsave("proportion of times the null was rejected for each true value of mu.png", plot2)
 ```
 
 
