@@ -145,4 +145,17 @@ ggsave("observations_over_time_by_group.png", plot1, width = 10, height = 6, dpi
 Based on the graph, the experimental group has higher values of observations over time than that of the control group. The experimental group seems to start with lower observation values compared to the control group but increases steadily over time.The control group’s observations fluctuate around a certain range without a clear trend of increase or decrease over the eight weeks; in contrast, experimental group's observations increase as time progresses.
 
 
+# Problem 3
+write a function to get the outputs of t test
+```{r}
+set.seed(1234)
+
+sim_normal <- function(n = 30, mu, sigma = 5){
+  x = rnorm(n, mean = mu, sd = sigma)
+  test <- t.test(x = x, alternative = "two.sided", conf.level = 0.95) |>
+    broom::tidy() |>
+    select(estimate, p.value)
+}
+```
+
 
