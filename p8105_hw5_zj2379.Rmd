@@ -199,6 +199,40 @@ plot2
 ggsave("proportion of times the null was rejected for each true value of mu.png", plot2)
 ```
 
+make a plot showing the average estimate of estimated mu on the y axis and the true value of mu on the x axis. 
+
+```{r}
+plot3<-sim_mu |>
+  group_by(mu) |>
+  summarize(average_estimated_mu=mean(estimate)) |>
+  ggplot(aes(x = mu, y = average_estimated_mu)) + 
+  geom_point() + 
+  geom_smooth() +
+  labs(
+    title = "average estimate of estimated mu for every true mu",
+    x = "True Value mu", 
+    y = "average estimate of estimated mu"
+  )
+plot3
+ggsave("average estimate of estimated mu for every true mu.png", plot3)
+```
+
+```{r}
+plot4<-sim_mu |>
+  group_by(mu) |>
+  filter(p.value < 0.05)|>
+  summarize(average_estimated_mu2=mean(estimate)) |>
+  ggplot(aes(x = mu, y = average_estimated_mu2)) + 
+  geom_point() + 
+  geom_smooth() +
+  labs(
+    title = "average estimate of estimated mu only in samples for which the null was rejected for every true mu",
+    x = "True Value mu", 
+    y = "average estimate of estimated mu"
+  )
+plot4
+ggsave("average estimate of estimated mu only in samples for which the null was rejected for every true mu", plot4)
+```
 
 
 
