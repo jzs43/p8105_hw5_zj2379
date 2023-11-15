@@ -188,8 +188,8 @@ Make a plot showing the proportion of times the null was rejected (the power of 
             total_number = n(), 
             reject_prop = p_value/total_number) |>
   ggplot(aes(x = mu, y = reject_prop)) + 
-  geom_point() + 
-  geom_smooth() +
+  geom_line() + 
+  geom_smooth()+
   labs(
     title = "proportion of times the null was rejected for each true value of mu",
     x = "True Value mu", 
@@ -206,8 +206,9 @@ plot3<-sim_mu |>
   group_by(mu) |>
   summarize(average_estimated_mu=mean(estimate)) |>
   ggplot(aes(x = mu, y = average_estimated_mu)) + 
-  geom_point() + 
-  geom_smooth() +
+  geom_line() + 
+  geom_point()+
+  geom_smooth()+
   labs(
     title = "average estimate of estimated mu for every true mu",
     x = "True Value mu", 
@@ -224,6 +225,7 @@ plot4<-sim_mu |>
   summarize(average_estimated_mu2=mean(estimate)) |>
   ggplot(aes(x = mu, y = average_estimated_mu2)) + 
   geom_point() + 
+  geom_line()+
   geom_smooth() +
   labs(
     title = "average estimate of estimated mu only in samples for which the null was rejected for every true mu",
@@ -231,8 +233,9 @@ plot4<-sim_mu |>
     y = "average estimate of estimated mu"
   )
 plot4
-ggsave("average estimate of estimated mu only in samples for which the null was rejected for every true mu", plot4)
+ggsave("average estimate of estimated mu only in samples for which the null was rejected for every true mu.png", plot4)
 ```
 
+Is the sample average of estimated mu across tests for which the null is rejected approximately equal to the true value of mu? why or why not
 
-
+Not really, the sample average of estimated mu across tests for which the null is rejected approximately equal to the true value of mu only for the true values of mu are 4, 5, 6. When the true value of mu is closer to the null hypothesis value (0), the test may not have enough power to consistently reject the null hypothesis, leading to a biased sample of estimates where the null is rejected. As the true value of mu increases, the power of the test also increases, making it more likely to reject the null hypothesis when it is false.
