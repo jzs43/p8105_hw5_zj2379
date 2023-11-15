@@ -158,9 +158,22 @@ sim <- function(n = 30, mu, sigma = 5){
 }
 ```
 
-first, let mu=0 and generate 5000 datasets 
+let mu=0 and generate 5000 datasets from the model
 ```{r}
 sim_mu_0 <- map_df(1:5000, ~sim(mu = 0))|>
   bind_rows()
+```
+
+generate 5000 datasets from the model for mu=1,2,3,4,5,6
+
+```{r}
+sim_mu<- 
+  tibble(
+    mu = c(0, 1, 2, 3, 4, 5, 6)
+  ) |>
+  mutate(
+    estimates = map(.x = mu, ~ map_df(1:5000, ~ sim(30, mu = .x)))
+  ) |>
+  unnest(estimates)
 ```
 
